@@ -41,23 +41,13 @@ const BlogList = () => {
     <div className="container-custom py-12">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">All Blog Posts</h1>
       
-      {/* Search */}
-      <div className="relative max-w-md mb-8">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-        <Input
-          type="search"
-          placeholder="Search posts..."
-          className="pl-9"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+      
       
       {filteredPosts.length > 0 ? (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentPosts.map(post => (
-              <BlogCard key={post.id} post={post} />
+              <BlogCard key={post._id} post={post} />
             ))}
           </div>
           

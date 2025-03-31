@@ -35,7 +35,7 @@ const BlogCreate = () => {
         title: "Content required",
         description: "Please enter content for your blog post",
         variant: "destructive",
-      });
+      }); 
       return;
     }
     

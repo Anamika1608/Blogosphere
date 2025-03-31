@@ -32,8 +32,8 @@ const Navbar = () => {
         
         {/* Desktop navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link to="/blogs" className="text-gray-600 hover:text-gray-900">
-            Blogs
+          <Link to="/my-blogs" className="text-gray-600 hover:text-gray-900">
+            My Blogs
           </Link>
           
           {isAuthenticated ? (

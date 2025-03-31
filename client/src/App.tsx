@@ -17,6 +17,7 @@ import BlogCreate from "@/pages/BlogCreate";
 import BlogEdit from "@/pages/BlogEdit";
 import NotFound from "@/pages/NotFound";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import MyBlogs from "./pages/MyBlogs";
 
 const queryClient = new QueryClient();
 
@@ -33,9 +34,14 @@ const App = () => (
               <main className="flex-grow">
                 <Routes>
                   <Route path="/" element={<Landing />} />
-                  <Route path="/login" element={<Login />} />
+                  <Route path="/login" element={
+                    <ProtectedRoute>
+                      <Login />
+                    </ProtectedRoute>
+                  } />
                   <Route path="/signup" element={<SignUp />} />
                   <Route path="/blogs" element={<BlogList />} />
+                  <Route path="/my-blogs" element={<MyBlogs />} />
                   <Route path="/blog/:id" element={<BlogDetail />} />
                   <Route path="/create" element={
                     <ProtectedRoute>

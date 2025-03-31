@@ -1,10 +1,10 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useToast } from '@/components/ui/use-toast';
+import axios from 'axios';
 
 export interface BlogPost {
-  id: string;
+  _id: string;
   title: string;
   content: string;
   excerpt: string;
@@ -38,7 +38,7 @@ export const useBlog = () => {
 // Sample blog posts
 const initialPosts: BlogPost[] = [
   {
-    id: '1',
+    _id: '1',
     title: 'Getting Started with React',
     content: `
       # Getting Started with React
@@ -147,7 +147,7 @@ const initialPosts: BlogPost[] = [
     updatedAt: '2023-01-15T12:00:00Z',
   },
   {
-    id: '2',
+    _id: '2',
     title: 'Understanding TypeScript with React',
     content: `
       # Understanding TypeScript with React
@@ -274,7 +274,7 @@ const initialPosts: BlogPost[] = [
     updatedAt: '2023-02-21T10:15:00Z',
   },
   {
-    id: '3',
+    _id: '3',
     title: 'CSS-in-JS vs CSS Modules',
     content: `
       # CSS-in-JS vs CSS Modules
@@ -444,27 +444,26 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setIsLoading(true);
     try {
-      // In a real app, this would be an API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const excerpt = content.length > 150 
-        ? content.substring(0, 150).replace(/#/g, '').trim() + '...'
-        : content.replace(/#/g, '').trim();
-        
-      const newPost: BlogPost = {
-        id: Math.random().toString(36).substr(2, 9),
-        title,
-        content,
-        excerpt,
-        author: {
-          id: user.id,
-          name: user.name,
+
+      const newPost = await axios.post(
+        import.meta.env.VITE_POST_BLOG, 
+        {
+          title,
+          content,
         },
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
       
-      const updatedPosts = [newPost, ...posts];
+
+
+      console.log("newPost", newPost.data);
+
+   
+      const updatedPosts = [newPost.data, ...posts];
       setPosts(updatedPosts);
       localStorage.setItem('blogPosts', JSON.stringify(updatedPosts));
       
@@ -473,7 +472,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
         description: "Your post has been successfully created.",
       });
       
-      return newPost;
+      return newPost.data;
     } catch (error) {
       toast({
         title: "Error",
@@ -498,10 +497,22 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setIsLoading(true);
     try {
-      // In a real app, this would be an API call
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const post = await axios.patch(
+        `${import.meta.env.VITE_UPDATE_BLOG}/${id}`, 
+        {
+          title,
+          content,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
+
+      console.log("post updated", post.data);
       
-      const postToUpdate = posts.find(post => post.id === id);
+      const postToUpdate = posts.find(post => post._id === id);
       
       if (!postToUpdate) {
         throw new Error('Post not found');
@@ -529,7 +540,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
       
       const updatedPosts = posts.map(post => 
-        post.id === id ? updatedPost : post
+        post._id === id ? updatedPost : post
       );
       
       setPosts(updatedPosts);
@@ -563,10 +574,21 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setIsLoading(true);
     try {
-      // In a real app, this would be an API call
-      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const post = await axios.delete(
+        `${import.meta.env.VITE_DELETE_BLOG}/${id}`, 
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
       
-      const postToDelete = posts.find(post => post.id === id);
+
+      console.log("post deleted", post.data);
+
+      
+      const postToDelete = posts.find(post => post._id === id);
       
       if (!postToDelete) {
         throw new Error('Post not found');
@@ -581,7 +603,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error('Permission denied');
       }
       
-      const updatedPosts = posts.filter(post => post.id !== id);
+      const updatedPosts = posts.filter(post => post._id !== id);
       setPosts(updatedPosts);
       localStorage.setItem('blogPosts', JSON.stringify(updatedPosts));
       
@@ -601,8 +623,22 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const getPostById = (id: string) => {
-    return posts.find(post => post.id === id);
+  const getPostById = async (id: string) => {
+
+    const post = await axios.get(
+      `${import.meta.env.VITE_GET_BLOG_BY_ID}/${id}`, 
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }
+    );
+    console.log("post by id", post.data);
+
+    return post.data;
+
+    
+    // return posts.find(post => post._id === id);
   };
 
   return (

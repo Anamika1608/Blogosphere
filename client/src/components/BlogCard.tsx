@@ -13,7 +13,7 @@ const BlogCard = ({ post }: BlogCardProps) => {
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader>
-        <Link to={`/blog/${post.id}`} className="hover:underline">
+        <Link to={`/blog/${post._id}`} className="hover:underline">
           <h3 className="text-xl font-semibold line-clamp-2">{post.title}</h3>
         </Link>
       </CardHeader>
