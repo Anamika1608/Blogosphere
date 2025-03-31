@@ -10,12 +10,10 @@ const Landing = () => {
   const [loading, setLoading] = useState(true);
   const { isAuthenticated } = useAuth();
   
-  // Fetch featured posts from database
   useEffect(() => {
     const fetchFeaturedPosts = async () => {
       try {
         setLoading(true);
-        // Fetch the 3 most recent posts for the featured section
         const response = await axios.get(`${import.meta.env.VITE_GET_BLOGS}?page=1&limit=3`);
         setFeaturedPosts(response.data.blogs || []);
         setLoading(false);
@@ -32,7 +30,7 @@ const Landing = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="hero-pattern py-16 md:py-24">
+      <section className="hero-pattern py-16 md:py-28">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
