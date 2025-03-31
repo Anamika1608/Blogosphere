@@ -43,6 +43,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     // Load posts from localStorage or use initial posts if none exist
+    
     const storedPosts = localStorage.getItem('blogPosts');
     if (storedPosts) {
       setPosts(JSON.parse(storedPosts));
@@ -203,23 +204,23 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
       );
       
 
-      console.log("post deleted", post.data);
+      console.log("post deleted", post);
 
       
-      const postToDelete = posts.find(post => post._id === id);
+      // const postToDelete = posts.find(post => post._id === id);
       
-      if (!postToDelete) {
-        throw new Error('Post not found');
-      }
+      // if (!postToDelete) {
+      //   throw new Error('Post not found');
+      // }
       
-      if (postToDelete.author._id !== user.id) {
-        toast({
-          title: "Permission denied",
-          description: "You can only delete your own posts.",
-          variant: "destructive",
-        });
-        throw new Error('Permission denied');
-      }
+      // if (postToDelete.author._id !== user.id) {
+      //   toast({
+      //     title: "Permission denied",
+      //     description: "You can only delete your own posts.",
+      //     variant: "destructive",
+      //   });
+      //   throw new Error('Permission denied');
+      // }
       
       const updatedPosts = posts.filter(post => post._id !== id);
       setPosts(updatedPosts);
@@ -230,6 +231,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
         description: "Your post has been successfully deleted.",
       });
     } catch (error) {
+      console.error('Delete error:', error);
       toast({
         title: "Error",
         description: "Failed to delete post. Please try again.",

@@ -1,17 +1,33 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { useBlog } from '@/contexts/BlogContext';
 import BlogCard from '@/components/BlogCard';
 import { useAuth } from '@/contexts/AuthContext';
+import axios from 'axios';
 
 const Landing = () => {
-  const { posts } = useBlog();
+  const [featuredPosts, setFeaturedPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { isAuthenticated } = useAuth();
   
-  // Get the 3 most recent posts for the featured section
-  const featuredPosts = posts.slice(0, 3);
+  // Fetch featured posts from database
+  useEffect(() => {
+    const fetchFeaturedPosts = async () => {
+      try {
+        setLoading(true);
+        // Fetch the 3 most recent posts for the featured section
+        const response = await axios.get(`${import.meta.env.VITE_GET_BLOGS}?page=1&limit=3`);
+        setFeaturedPosts(response.data.blogs || []);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching featured posts:', error);
+        setLoading(false);
+        setFeaturedPosts([]);
+      }
+    };
+
+    fetchFeaturedPosts();
+  }, []);
   
   return (
     <div>
@@ -103,13 +119,17 @@ const Landing = () => {
             </Link>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
-            {featuredPosts.map(post => (
-              <BlogCard key={post.id} post={post} />
-            ))}
-          </div>
-          
-          {featuredPosts.length === 0 && (
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600">Loading featured posts...</p>
+            </div>
+          ) : featuredPosts.length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-6">
+              {featuredPosts.map(post => (
+                <BlogCard key={post._id} post={post} />
+              ))}
+            </div>
+          ) : (
             <div className="text-center py-12">
               <p className="text-gray-600">No posts yet. Be the first to create one!</p>
               <Link to={isAuthenticated ? "/create" : "/signup"}>

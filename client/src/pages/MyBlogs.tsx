@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth, AuthProvider } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import axios from 'axios';
+import { useBlog } from '@/contexts/BlogContext';
 
 import {
   AlertDialog,
@@ -49,6 +50,7 @@ const MyBlogs = () => {
   const [userPosts, setUserPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { deletePost } = useBlog();
 
   useEffect(() => {
     const fetchUserPosts = async () => {
@@ -56,14 +58,14 @@ const MyBlogs = () => {
         navigate('/login');
         return;
       }
-      
+
       try {
         // Fetch posts from the API endpoint
         const response = await axios.get('http://localhost:5001/api/v1/blogs?page=1&limit=10');
-        
+
         if (response.data && Array.isArray(response.data.blogs)) {
           // Filter posts by the current user
-          const myPosts = response.data.blogs.filter((post: BlogPost) => 
+          const myPosts = response.data.blogs.filter((post: BlogPost) =>
             post.author._id === user.id || post.author.id === user.id
           );
           setUserPosts(myPosts);
@@ -77,16 +79,15 @@ const MyBlogs = () => {
         setLoading(false);
       }
     };
-    
+
     fetchUserPosts();
   }, [user, navigate]);
 
-  const handleDelete = async (postId: string) => {
+  const handleDeletePost = async (postId: string) => {
     try {
-      // Delete post using axios
-      await axios.delete(`http://localhost:5001/api/v1/blogs/${postId}`);
-      
-      // Update the posts list after deletion
+      deletePost(postId);
+      // Show confirmation dialog before deleting
+
       setUserPosts(userPosts.filter(post => post._id !== postId));
     } catch (error) {
       console.error('Delete error:', error);
@@ -173,7 +174,7 @@ const MyBlogs = () => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDelete(post._id)}>
+                      <AlertDialogAction onClick={() => handleDeletePost(post._id)}>
                         Delete
                       </AlertDialogAction>
                     </AlertDialogFooter>

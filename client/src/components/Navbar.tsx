@@ -72,11 +72,11 @@ const Navbar = () => {
         <div className="md:hidden p-4 bg-white border-t">
           <nav className="flex flex-col space-y-4">
             <Link 
-              to="/blogs" 
+              to="/my-blogs" 
               className="text-gray-600 hover:text-gray-900 py-2"
               onClick={() => setIsMenuOpen(false)}
             >
-              Blogs
+              My Blogs
             </Link>
             
             {isAuthenticated ? (
