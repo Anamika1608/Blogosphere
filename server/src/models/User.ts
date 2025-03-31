@@ -2,6 +2,7 @@ import mongoose, { Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 export interface UserDocument extends Document {
+  _id: string;
   email: string;
   password: string;
   name: string;
@@ -35,17 +36,14 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-// Hash password before saving
+
 UserSchema.pre<UserDocument>('save', async function (next) {
   const user = this;
 
-  // Only hash the password if it has been modified (or is new)
   if (!user.isModified('password')) return next();
 
   try {
-    // Generate salt
     const salt = await bcrypt.genSalt(10);
-    // Hash password
     user.password = await bcrypt.hash(user.password, salt);
     next();
   } catch (error: any) {
@@ -53,7 +51,6 @@ UserSchema.pre<UserDocument>('save', async function (next) {
   }
 });
 
-// Method to compare passwords
 UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   const user = this as UserDocument;
   return bcrypt.compare(candidatePassword, user.password);
