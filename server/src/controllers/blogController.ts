@@ -99,6 +99,8 @@ export const getBlogById = async (req: Request, res: Response): Promise<void> =>
 // @access  Private (only author)
 export const updateBlog = async (req: Request, res: Response): Promise<void> => {
   try {
+    console.log("req.body", req.body);
+    console.log("req.params.id", req.params.id);
     const { title, content } = req.body;
 
     if (!req.user) {

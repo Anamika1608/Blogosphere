@@ -18,6 +18,7 @@ import BlogEdit from "@/pages/BlogEdit";
 import NotFound from "@/pages/NotFound";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import MyBlogs from "./pages/MyBlogs";
+import EditBlog from "./pages/EditBlog";
 
 const queryClient = new QueryClient();
 
@@ -35,14 +36,13 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Landing />} />
                   <Route path="/login" element={
-                    <ProtectedRoute>
                       <Login />
-                    </ProtectedRoute>
                   } />
                   <Route path="/signup" element={<SignUp />} />
                   <Route path="/blogs" element={<BlogList />} />
                   <Route path="/my-blogs" element={<MyBlogs />} />
                   <Route path="/blog/:id" element={<BlogDetail />} />
+                  <Route path="/edit/:id" element={<EditBlog />} />
                   <Route path="/create" element={
                     <ProtectedRoute>
                       <BlogCreate />
