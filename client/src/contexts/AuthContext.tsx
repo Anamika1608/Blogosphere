@@ -1,6 +1,6 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import axios from 'axios';
 
 interface User {
   id: string;
@@ -44,21 +44,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // This is a mock implementation
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock user for demo purposes
-      const mockUser = {
-        id: Math.random().toString(36).substr(2, 9),
+      const response = await axios.post(import.meta.env.VITE_LOGIN_URL, {
         email,
-        name: email.split('@')[0],
-      };
-      
-      setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
+        password,
+      });
+
+      const { _id, name: userName, email: userEmail, token } = response.data;
+
+      const user = { id: _id, name: userName, email: userEmail };
+
+      setUser(user);
+
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+
+
       toast({
         title: "Login successful",
-        description: `Welcome back, ${mockUser.name}!`,
+        description: `Welcome back, ${user.name}!`,
+
       });
     } catch (error) {
       toast({
@@ -75,18 +79,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signup = async (email: string, password: string, name: string) => {
     setIsLoading(true);
     try {
-      // This is a mock implementation
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock user for demo purposes
-      const mockUser = {
-        id: Math.random().toString(36).substr(2, 9),
-        email,
+
+      const response = await axios.post(import.meta.env.VITE_REGISTER_URL, {
         name,
-      };
-      
-      setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
+        email,
+        password,
+      });
+
+      const { _id, name: userName, email: userEmail, token } = response.data;
+
+      const user = { id: _id, name: userName, email: userEmail };
+
+      setUser(user);
+
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+
       toast({
         title: "Sign up successful",
         description: `Welcome, ${name}!`,
@@ -106,6 +114,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    window.location.href = '/'; 
     toast({
       title: "Logged out",
       description: "You have been successfully logged out.",
@@ -113,11 +123,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      isLoading, 
-      login, 
-      signup, 
+    <AuthContext.Provider value={{
+      user,
+      isLoading,
+      login,
+      signup,
       logout,
       isAuthenticated: !!user
     }}>
