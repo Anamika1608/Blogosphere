@@ -6,8 +6,11 @@ import cors from 'cors';
 import * as middlewares from './middlewares';
 import api from './api';
 import MessageResponse from './interfaces/MessageResponse';
+import { connectDB } from './config/db';
 
 require('dotenv').config();
+
+connectDB();
 
 const app = express();
 
