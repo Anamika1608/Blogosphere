@@ -61,7 +61,7 @@ const MyBlogs = () => {
 
       try {
         // Fetch posts from the API endpoint
-        const response = await axios.get('http://localhost:5001/api/v1/blogs?page=1&limit=10');
+        const response = await axios.get(import.meta.env.VITE_GET_BLOGS);
 
         if (response.data && Array.isArray(response.data.blogs)) {
           // Filter posts by the current user
