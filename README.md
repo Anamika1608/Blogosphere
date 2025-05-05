@@ -1,6 +1,10 @@
 # Blog Application
 A full-stack blog application allowing users to create, view, and manage blog posts with authentication.
 
+## 🎥 Demo Video (click to play)
+
+[![Watch the demo](client/public/hero.png)](https://www.loom.com/share/eddb7c28011240b1b34665e1af8f70af)
+
 ## Features
 - User authentication using email and password
 - Create, read, update, and delete blog posts
@@ -13,8 +17,6 @@ This project consists of two main folders:
 - `client/`: Frontend React application
 - `server/`: Backend Express.js API with TypeScript and MongoDB
 
-## Landing Page Screenshot
-![Landing Page](client/public/hero.png)
 
 ## Prerequisites
 Before you begin, ensure you have the following installed:
